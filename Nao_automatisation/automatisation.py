@@ -6,12 +6,9 @@ from docx import Document
 
 
 class NaoScriptGenerator:
-    def __init__(self, nom_fichier, nursery_choice):
+    def __init__(self, nom_fichier):
         self.nom_fichier = nom_fichier
-        self.nursery_choice = nursery_choice
-        self.nao_talker = "NAO :"
-        self.robots_ip = ['192.168.90.236', "192.168.55.60", "11.10.10.10", "12.10.10.10", "10.101.0.183"]
-        self.robot_ip = self.robots_ip[self.nursery_choice]
+        self.nao_talker = "Nao :"
 
     def lire_fichier_word(self):
         """Lit un fichier Word et retourne son contenu sous forme de texte."""
@@ -24,7 +21,7 @@ class NaoScriptGenerator:
         return contenu
 
 
-    def lire_fichier_python(file_path):
+    def lire_fichier_python(self, file_path):  # Add 'self' here
         """Lit un fichier Python et retourne son contenu sous forme de texte."""
         try:
             with open(file_path, 'r') as f:
@@ -49,7 +46,7 @@ class NaoScriptGenerator:
 
         return phrases_nao, index_nao, phrases_others, index_others
 
-    def discussion_to_sleep(discussion):
+    def discussion_to_sleep(self, discussion):
         """Calcule le temps de pause en fonction de la longueur de la phrase."""
         return [max(len(phrase) / 14, 1.5) for phrase in discussion]
 
@@ -80,14 +77,12 @@ class NaoScriptGenerator:
     def sauvegarder_script(self):
         """Crée et enregistre le script généré pour NAO."""
         encodage = "# -*- coding: utf-8 -*- \n"
-        introduction = self.lire_fichier_python("/home/gabriel/Documents/nao/nao_softwarev3/Nao_automatisation/introduction_nao.py")
-        conclusion = self.lire_fichier_python("/home/gabriel/Documents/nao/nao_softwarev3/Nao_automatisation/conclusion_nao.py")
-
-        script_nao = encodage + introduction + self.generer_script_nao() + conclusion
+        introduction = self.lire_fichier_python("/home/gabriel/Documents/nao/nao_software_v4/Nao_automatisation/introduction_nao.py")
+        script_nao = encodage + introduction + self.generer_script_nao() 
 
         fichier_nom = os.path.basename(self.nom_fichier)[:-5]  
         dossier_parent = os.path.dirname(os.getcwd())
-        fichier_output = os.path.join(dossier_parent, "nao_softwarev3/Nao_tasks/themes", f"{fichier_nom}.py")
+        fichier_output = os.path.join(dossier_parent, "Nao_tasks/themes", f"{fichier_nom}.py")
 
         with open(fichier_output, 'w') as file:
             file.write(script_nao)
@@ -95,6 +90,6 @@ class NaoScriptGenerator:
         return fichier_output
 
 
-def text_to_nao(nom_fichier, nursery_choice):
-    generator = NaoScriptGenerator(nom_fichier, nursery_choice)
+def text_to_nao(nom_fichier):
+    generator = NaoScriptGenerator(nom_fichier)
     return generator.sauvegarder_script()
